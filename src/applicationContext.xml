@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<!-- 配置hibernate的数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl"
+			value="jdbc:mysql://zhanghe.ac.cn:3306/sk_blog?useUnicode=true&amp;characterEncoding=UTF-8"></property>
+		<property name="user" value="kid"></property>
+		<property name="password" value="zhanghe123"></property>
+		<!--连接池中保留的最小连接数。 -->
+		<property name="minPoolSize" value="10" />
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="100" />
+		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="1800" />
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement" value="3" />
+		<property name="maxStatements" value="1000" />
+		<property name="initialPoolSize" value="10" />
+		<!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+		<property name="idleConnectionTestPeriod" value="60" />
+		<!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="breakAfterAcquireFailure" value="true" />
+		<property name="testConnectionOnCheckout" value="false" />
+	</bean>
+
+	<!-- 配置sessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 使用xml配置文件的方式加载hibernate -->
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property> 
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">25</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>	
+		<!-- 自动扫描bean文件 -->
+		<property name="packagesToScan">
+			<list>
+				<value>cn.ac.zhanghe.blog.bean.</value>
+			</list>
+		</property>
+	</bean>
+	<!-- dao配置 -->
+	<!-- UserDao -->
+	<bean id="userDao" class="cn.ac.zhanghe.blog.daoImpl.UserDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="userService" class="cn.ac.zhanghe.blog.serviceImpl.UserService">
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	<bean id="userAction" class="cn.ac.zhanghe.blog.action.UserAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	
+	<!-- MessageDao -->
+	<bean id="messageDao" class="cn.ac.zhanghe.blog.daoImpl.MessageDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="messageService" class="cn.ac.zhanghe.blog.serviceImpl.MessageService">
+		<property name="messageDao" ref="messageDao"></property>
+	</bean>
+	<bean id="messageAction" class="cn.ac.zhanghe.blog.action.MessageAction" scope="prototype">
+		<property name="messageService" ref="messageService"></property>
+	</bean>
+	
+	<!-- ArticleDao -->
+	<bean id="articleDao" class="cn.ac.zhanghe.blog.daoImpl.ArticleDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="articleService" class="cn.ac.zhanghe.blog.serviceImpl.ArticleService">
+		<property name="articleDao" ref="articleDao"></property>
+	</bean>
+	<bean id="articleAction" class="cn.ac.zhanghe.blog.action.ArticleAction" scope="prototype">
+		<property name="articleService" ref="articleService"></property>
+		<property name="commentService" ref="commentService"></property>
+		<property name="categoryService" ref="categoryService"></property>
+	</bean>
+	
+	<!-- CategoryDao -->
+	<bean id="categoryDao" class="cn.ac.zhanghe.blog.daoImpl.CategoryDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="categoryService" class="cn.ac.zhanghe.blog.serviceImpl.CategoryService">
+		<property name="categoryDao" ref="categoryDao"></property>
+	</bean>
+	<bean id="categoryAction" class="cn.ac.zhanghe.blog.action.CategoryAction" scope="prototype">
+		<property name="categoryService" ref="categoryService"></property>
+	</bean>
+	
+	<!-- CommentDao -->
+	<bean id="commentDao" class="cn.ac.zhanghe.blog.daoImpl.CommentDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="commentService" class="cn.ac.zhanghe.blog.serviceImpl.CommentService">
+		<property name="commentDao" ref="commentDao"></property>
+	</bean>
+	<bean id="commentAction" class="cn.ac.zhanghe.blog.action.CommentAction" scope="prototype">
+		<property name="commentService" ref="commentService"></property>
+		<property name="articleService" ref="articleService"></property>
+	</bean>
+	
+
+	<!-- 配置HibernateTransactionManager -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 配置事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager"> 
+		<tx:attributes> 
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="5000" /> 
+			<tx:method name="add*" propagation="REQUIRES_NEW" /> 
+			<tx:method name="update*" propagation="REQUIRES_NEW" /> 
+			<tx:method name="delete*" propagation="REQUIRES_NEW" /> 
+		</tx:attributes> 
+	</tx:advice>
+	
+	<!-- 切面控制配置  -->
+	<aop:config> 
+		<aop:pointcut expression="execution(* cn.ac.zhanghe.blog.serviceImpl.*.*(..))" id="pointcut"/> 
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/> 
+	</aop:config> 
+	
+		
+	<!-- 开启事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+</beans>

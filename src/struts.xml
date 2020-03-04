@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+
+	<!-- 自动动态方法的调用，使用这个设置后可以这样调用：action!method -->
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <!-- 把它设置为开发模式，发布时要设置为false -->
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.objectFactory.spring.autoWire" value="name"></constant>
+    <constant name="struts.objectFactory" value="spring" />
+	
+	
+	<package name="default" namespace="/" extends="struts-default">
+	<!-- 配置自定义拦截器LoginedCheckInterceptor -->  
+     <interceptors>  
+     	<interceptor name="loginedCheck" class="cn.ac.zhanghe.blog.exception.LoginInteceptor"/>  
+        <interceptor-stack name="myinteceptor">  
+        <interceptor-ref name="loginedCheck"/>
+        <interceptor-ref name="defaultStack"/>
+        </interceptor-stack>  
+    </interceptors>       
+    
+    <!-- 定义全局result -->  
+    <global-results>  
+   	    <!-- 定义名为exception的全局result -->  
+    	<result name="exception">/exception.jsp</result>  
+    	<result name="login" type="redirect">/loginError.jsp</result>  
+    </global-results>     
+	
+	<!-- 配置验证码 -->
+	<!-- <action name="createImageAction" class="cn.ac.zhanghe.blog.util.CreateImageAction">
+       	<result name="success" type="stream">
+         	<param name="contentType">image/jpeg</param>
+         	<param name="inputName">inputStream</param>
+      	 </result>
+　　　</action> -->
+	<!-- 配置UserAction -->
+	<action name="userAction-*" class="userAction" method="{1}">
+		<result name="regSuccess">/registerResult.jsp</result>
+		<result name="regError">/registerResult.jsp</result>
+		<result name="getULoginSuccess">/loginResult.jsp</result>
+		<result name="getULoginError">/loginResult.jsp</result>
+		<result name="getUserListSuccess">/userManage.jsp</result>
+		<result name="getUserListError">/userManage.jsp</result>
+		<result name="updateUserRootSuccess">/userMResult.jsp</result>
+		<result name="updateUserRootError">/userMResult.jsp</result>
+		<result name="updateUComPowerSuccess">/userMResult.jsp</result>
+		<result name="updateUComPowerError">/userMResult.jsp</result>
+		<result name="getUserByPageSuccess">/userManage.jsp</result>
+		<result name="getUserByPageError">/index.jsp</result>
+		<result name="exitSuccess">/exitSuccess.jsp</result>
+		<result name="exitError">/index.jsp</result>
+		<result name="getUserUpdateSuccess">/personInfoManage.jsp</result>
+		<result name="getUserUpdateError">/updateUserResult.jsp</result>
+		<result name="updateUserSuccess">/updateUserResult.jsp</result>
+		<result name="updateUserError">/updateUserResult.jsp</result>
+		<result name="deleteUserSuccess">/deleteUserResult.jsp</result>
+		<result name="deleteUserError">/deleteUserResult.jsp</result>
+		<interceptor-ref name="myinteceptor"></interceptor-ref>
+	</action>
+	<!-- 配置MessageAction -->
+	<action name="messageAction-*" class="messageAction" method="{1}">
+		<result name="addMesSuccess">/addMesResult.jsp</result>
+		<result name="addMesError">/addMesResult.jsp</result>
+		<result name="deleteMesSuccess">/deleteMesResult.jsp</result>
+		<result name="deleteMesError">/deleteMesResult.jsp</result>
+		<result name="getMesListSuccess">/messageManage.jsp</result>
+		<result name="getMesListError">/index.jsp</result>
+		<result name="getMessageByIdSuccess">/showMessage.jsp</result>
+		<result name="getMessageByIdError">/Error.jsp</result>
+		<result name="getMesByPageSuccess">/messageManage.jsp</result>
+		<result name="getMesByPageError">/messageMResult.jsp</result>
+		<interceptor-ref name="myinteceptor"></interceptor-ref>
+	</action>
+	<!-- 配置ArticleAction -->
+	<action name="articleAction-*" class="articleAction" method="{1}">
+		<result name="addArtSuccess">/addArtResult.jsp</result>
+		<result name="addArtError">/addArtResult.jsp</result>
+		<result name="deleteArtSuccess">/updateArtResult.jsp</result>
+		<result name="deleteArtError">/updateArtResult.jsp</result>
+		<result name="getArtListSuccess">/articleList.jsp</result>
+		<result name="getArtListError">/Error.jsp</result>
+		<result name="getArtListByIdSuccess">/showArticle.jsp</result>
+		<result name="getArtListByIdError">/Error.jsp</result>
+		<result name="getArtListByCategoryIdSuccess">/articleListByCategory.jsp</result>
+		<result name="getArtListByCategoryIdError">/Error.jsp</result>
+		<result name="updateArtSuccess">/updateArtResult.jsp</result>
+		<result name="updateArtError">/updateArtResult.jsp</result>
+		<result name="getArtByArtIdSuccess">/showArticle.jsp</result>
+		<result name="getArtByArtIdError">/Error.jsp</result>
+		<result name="getArticleByPageSuccess">/articleList.jsp</result>
+		<result name="getArticleByPageError">/Error.jsp</result>
+		<result name="getArtUpdateSuccess">/updateArticle.jsp</result>
+		<result name="getArtUpdateError">/showArticle.jsp</result>
+		<interceptor-ref name="myinteceptor"></interceptor-ref>
+	</action>
+	<!-- 配置CategoryAction -->
+	<action name="categoryAction-*" class="categoryAction" method="{1}">
+		<result name="addCategorySuccess">/Success.jsp</result>
+		<result name="addCategoryError">/Error.jsp</result>
+		<result name="deleteCategorySuccess">/Success.jsp</result>
+		<result name="deleteCategoryError">/Success.jsp</result>
+		<result name="getCatListByUserIdSuccess">/addArticle.jsp</result>
+		<result name="getCatListByUserIdError">/Error.jsp</result>
+		<result name="updateCategorySuccess">/Success.jsp</result>
+		<result name="updateCategoryError">/Error.jsp</result>
+		<interceptor-ref name="myinteceptor"></interceptor-ref>
+	</action>
+	<!-- 配置CommentAction -->
+	<action name="commentAction-*" class="commentAction" method="{1}">
+		<result name="addCommentSuccess">/addComResult.jsp</result>
+		<result name="addCommentError">/addComResult.jsp</result>
+		<result name="getCommByPageSuccess">/commentManage.jsp</result>
+		<result name="getCommByPageError">/Error.jsp</result>
+		<interceptor-ref name="myinteceptor"></interceptor-ref>
+	</action>
+	</package>
+</struts>    
