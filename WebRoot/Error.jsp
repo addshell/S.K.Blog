@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<td>
-				 	<s:text name="点击此处立即返回主页" />&nbsp;&nbsp;&nbsp;&nbsp;
+				 	<s:text name="点击此处立即返回主页" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="/index.jsp">点击此处立即跳转</a>
 				</td>
 			</tr>
