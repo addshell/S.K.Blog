@@ -95,7 +95,9 @@ public class UserTest{
 	}
 
 
-
+	/**
+	add a common
+	*/
 	public void setUserd(UserDao userd) {
 		this.userd = userd;
 	}
